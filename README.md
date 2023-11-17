@@ -4,7 +4,7 @@
 
 ---
 
-Library for encoding EIP-712 typed data in elixir.
+Library for encoding and signing [EIP-712](https://eips.ethereum.org/EIPS/eip-712) typed data in elixir.
 
 See the [documentation](https://hexdocs.pm/eip712) for more information.
 
