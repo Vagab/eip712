@@ -2,7 +2,7 @@
 
 ![EIP712](./eip-712-logo.jpeg)
 
---
+---
 
 Library for encoding EIP-712 typed data in elixir.
 
