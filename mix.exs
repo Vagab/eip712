@@ -37,7 +37,8 @@ defmodule Eip712.MixProject do
     [
       {:ex_keccak, "~> 0.7.3"},
       {:ex_abi, "~> 0.6.4"},
-      {:curvy, "~> 0.3.1"}
+      {:curvy, "~> 0.3.1"},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 end
