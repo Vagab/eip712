@@ -7,6 +7,8 @@ defmodule Eip712.MixProject do
       version: "0.1.0",
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
+      description: description(),
+      package: package(),
       deps: deps()
     ]
   end
@@ -15,6 +17,18 @@ defmodule Eip712.MixProject do
   def application do
     [
       extra_applications: [:logger]
+    ]
+  end
+
+  defp description do
+    "Library for encoding and signing EIP-712 typed data in elixir."
+  end
+
+  defp package do
+    [
+      name: "eip712",
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/stocks29/eip712"}
     ]
   end
 
