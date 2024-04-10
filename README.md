@@ -15,7 +15,7 @@ The package can be installed by adding `eip712` to your list of dependencies in 
 ```elixir
 def deps do
   [
-    {:eip712, "~> 0.1.0"}
+    {:eip712, "~> 0.2.0"}
   ]
 end
 ```
