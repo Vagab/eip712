@@ -104,6 +104,9 @@ defmodule EIP712.Typed do
         iex> EIP712.Typed.Type.serialize_type(:address)
         "address"
 
+        iex> EIP712.Typed.Type.serialize_type(:bool)
+        "bool"
+
         iex> EIP712.Typed.Type.serialize_type({:uint, 256})
         "uint256"
 
@@ -118,6 +121,7 @@ defmodule EIP712.Typed do
     """
     @spec serialize_type(field_type()) :: String.t()
     def serialize_type(:address), do: "address"
+    def serialize_type(:bool), do: "bool"
     def serialize_type({:uint, sz}), do: "uint#{sz}"
     def serialize_type({:bytes, sz}), do: "bytes#{sz}"
     def serialize_type({:array, type}), do: "#{serialize_type(type)}[]"
@@ -133,6 +137,9 @@ defmodule EIP712.Typed do
         iex> EIP712.Typed.Type.deserialize_type("address")
         :address
 
+        iex> EIP712.Typed.Type.deserialize_type("bool")
+        :bool
+
         iex> EIP712.Typed.Type.deserialize_type("uint256")
         {:uint, 256}
 
@@ -147,6 +154,7 @@ defmodule EIP712.Typed do
     """
     @spec deserialize_type(String.t()) :: field_type()
     def deserialize_type("address"), do: :address
+    def deserialize_type("bool"), do: :bool
     def deserialize_type("uint256"), do: {:uint, 256}
     def deserialize_type("bytes32"), do: {:bytes, 32}
     def deserialize_type("string"), do: :string
@@ -174,6 +182,12 @@ defmodule EIP712.Typed do
         iex> EIP712.Typed.Type.deserialize_value!(55, {:uint, 256})
         55
 
+        iex> EIP712.Typed.Type.deserialize_value!(true, :bool)
+        true
+
+        iex> EIP712.Typed.Type.deserialize_value!(false, :bool)
+        false  
+
         iex> EIP712.Typed.Type.deserialize_value!("0x00000000000000000000000000000000000000000000000000000000000000CC", {:bytes, 32})
         <<0xCC::256>>
 
@@ -186,6 +200,7 @@ defmodule EIP712.Typed do
     @spec deserialize_value!(term(), primitive()) :: term()
     def deserialize_value!(value, :address), do: EIP712.Util.decode_hex!(value)
     def deserialize_value!(value, :string), do: value
+    def deserialize_value!(value, :bool), do: value
     def deserialize_value!(value, {:uint, _}), do: value
 
     def deserialize_value!(value, {:bytes, sz}),
@@ -198,6 +213,12 @@ defmodule EIP712.Typed do
 
         iex> EIP712.Typed.Type.serialize_value(<<1::160>>, :address)
         "0x0000000000000000000000000000000000000001"
+
+        iex> EIP712.Typed.Type.serialize_value(true, :bool)
+        1
+
+        iex> EIP712.Typed.Type.serialize_value(false, :bool)
+        0
 
         iex> EIP712.Typed.Type.serialize_value(55, {:uint, 256})
         55
@@ -216,6 +237,8 @@ defmodule EIP712.Typed do
     """
     @spec serialize_value(term(), primitive()) :: term()
     def serialize_value(value, :address), do: serialize_value(value, {:bytes, 20})
+    def serialize_value(true, :bool), do: 1
+    def serialize_value(false, :bool), do: 0
     def serialize_value(value, :string), do: value
     def serialize_value(value, {:uint, _}), do: value
     def serialize_value(value, {:array, type}), do: Enum.map(value, &serialize_value(&1, type))
@@ -235,6 +258,12 @@ defmodule EIP712.Typed do
         iex> EIP712.Typed.Type.encode_data_value(<<1::160>>, :address)
         <<1::256>>
 
+        iex> EIP712.Typed.Type.encode_data_value(true, :bool)
+        <<0::248, 1>>
+
+        iex> EIP712.Typed.Type.encode_data_value(false, :bool)
+        <<0::248, 0>>
+
         iex> EIP712.Typed.Type.encode_data_value(55, {:uint, 256})
         <<0::248, 55>>
 
@@ -249,6 +278,8 @@ defmodule EIP712.Typed do
     """
     @spec encode_data_value(term(), primitive()) :: term()
     def encode_data_value(value, :address), do: EIP712.Util.pad(value, 32)
+    def encode_data_value(true, :bool), do: encode_data_value(1, {:uint, 256})
+    def encode_data_value(false, :bool), do: encode_data_value(0, {:uint, 256})
     def encode_data_value(value, {:uint, _}), do: EIP712.Util.encode_bytes(value, 32)
     def encode_data_value(value, :string), do: EIP712.Util.keccak(value)
     def encode_data_value(value, {:bytes, _}), do: EIP712.Util.pad(value, 32)
